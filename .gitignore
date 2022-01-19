@@ -1,0 +1,13 @@
+*.*~
+*.pyc
+__pycache__/
+/static/
+/media/
+/sharedle/secret_settings.py
+/docs/_build/
+db.sqlite3
+/env/
+/venv/
+setup.cfg
+node_modules/
+theme/static/

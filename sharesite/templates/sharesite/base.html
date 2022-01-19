@@ -1,0 +1,19 @@
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} Sharedle {% endblock title %}</title>
+    {% block base_includes %} {% endblock base_includes %}
+    {% tailwind_css %}
+    {% block includes %} {% endblock includes %}
+  </head>
+  <body class="bg-green-50 font-serif leading-normal tracking-normal">
+  	{% block content_wrapper %}
+    {% block content %} {% endblock content %}
+    {% endblock content_wrapper %}
+    {% block footer %}
+    {% endblock footer %}
+  </body>
+</html>
