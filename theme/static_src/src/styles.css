@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .empty {
+    @apply border-gray-300 bg-white text-black;
+  }
+
+  .guessed {
+    @apply border-black bg-white text-black;
+  }
+  
+  .correct {
+  	@apply bg-green-600 border-green-600 text-white;
+  }
+
+  .semi-correct {
+  	@apply bg-yellow-500 border-yellow-500 text-white;
+  }
+
+  .incorrect {
+  	@apply bg-gray-500 border-gray-500 text-white;
+  }
+}

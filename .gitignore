@@ -11,3 +11,4 @@ db.sqlite3
 setup.cfg
 node_modules/
 theme/static/
+.python-version
