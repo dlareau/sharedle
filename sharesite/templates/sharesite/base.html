@@ -9,7 +9,10 @@
     {% tailwind_css %}
     {% block includes %} {% endblock includes %}
   </head>
-  <body class="bg-green-50 font-serif leading-normal tracking-normal">
+  <body class="bg-gray-100 font-sans-serif leading-normal tracking-normal">
+    <header class="flex justify-center mt-10 items-center">
+      <h1 class="text-4xl font-bold basis-1/2 border-b-2 border-gray-500 text-center"> SHAREDLE </h1>
+    </header>
   	{% block content_wrapper %}
     {% block content %} {% endblock content %}
     {% endblock content_wrapper %}

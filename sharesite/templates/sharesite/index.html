@@ -1,0 +1,19 @@
+{% extends "sharesite/base.html" %}
+
+{% block content %}
+  <div class="flex justify-center mt-40 items-center">
+    <div class="grid grid-cols-5 gap-2 place-content-center">
+      {% with ''|center:30 as range %}
+      {% for _ in range %}
+        <div class="w-16 h-16 border-2 border-gray-300 text-center">
+          {{forloop.counter}}
+        </div>
+      {% endfor %}
+      {% endwith %}
+    </div>
+  </div>
+{% endblock %}
+
+<script type="text/javascript">
+  
+</script>
