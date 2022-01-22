@@ -1,0 +1,27 @@
+{% extends "sharesite/base.html" %}
+{% load static %}
+
+{% block includes %}
+<script src="{% static 'sharesite/input.js' %}"></script>
+<script src="{% static 'sharesite/words.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="flex flex-col justify-center mt-10 items-center">
+    <h1>Group members</h1>
+    <div class="flex flex-row justify-center items-center">
+      <div class="flex flex-col justify-center items-center m-2">
+        <h1>Dillon</h1>
+        {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl"%}
+      </div>
+      <div class="flex flex-col justify-center items-center m-2">
+        <h1>Ethan</h1>
+        {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl"%}
+      </div>
+      <div class="flex flex-col justify-center items-center m-2">
+        <h1>Eforney</h1>
+        {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl"%}
+      </div>
+    </div>
+  </div>
+{% endblock %}

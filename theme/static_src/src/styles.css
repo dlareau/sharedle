@@ -4,22 +4,22 @@
 
 @layer components {
   .empty {
-    @apply border-gray-300 bg-white text-black;
+    @apply border-gray-300 bg-white text-black border-2;
   }
 
-  .guessed {
-    @apply border-black bg-white text-black;
+  .current {
+    @apply border-black border-2;
   }
   
   .correct {
-  	@apply bg-green-600 border-green-600 text-white;
+  	@apply bg-green-600 text-white;
   }
 
   .semi-correct {
-  	@apply bg-yellow-500 border-yellow-500 text-white;
+  	@apply bg-yellow-500 text-white;
   }
 
   .incorrect {
-  	@apply bg-gray-500 border-gray-500 text-white;
+  	@apply bg-gray-500 text-white;
   }
 }

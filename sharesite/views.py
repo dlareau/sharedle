@@ -6,5 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 def index(request):
-
     return render(request, "sharesite/index.html", {})
+
+def groups(request):
+    return render(request, "sharesite/groups.html", {})
