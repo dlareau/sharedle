@@ -1,27 +1,49 @@
 {% extends "sharesite/base.html" %}
 {% load static %}
 
-{% block includes %}
-<script src="{% static 'sharesite/input.js' %}"></script>
-<script src="{% static 'sharesite/words.js' %}"></script>
-{% endblock %}
-
 {% block content %}
   <div class="flex flex-col justify-center mt-10 items-center">
-    <h1>Group members</h1>
-    <div class="flex flex-row justify-center items-center">
-      <div class="flex flex-col justify-center items-center m-2">
-        <h1>Dillon</h1>
-        {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl"%}
-      </div>
-      <div class="flex flex-col justify-center items-center m-2">
-        <h1>Ethan</h1>
-        {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl"%}
-      </div>
-      <div class="flex flex-col justify-center items-center m-2">
-        <h1>Eforney</h1>
-        {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl"%}
+    <h2 class="text-2xl">Your Groups</h2>
+    <div class="flex flex-wrap flex-row justify-center items-center">
+      {% for group in groups %}
+        <a href="/group/{{group.id}}/">
+          <div class="flex flex-col justify-center items-center m-4 w-32 border-2 border-black
+                      {% if group.num_members == group.num_finished %} bg-green-300 {% endif %}">
+            <h3 class="text-xl text-center">{{group.name}}</h3>
+            <div class="text-4xl">{{group.num_finished}}/{{group.num_members}}</div>
+          </div>
+        </a>
+      {% endfor%}
+    </div>
+    <button type="button" class="mt-5 px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#groupModalCenter">
+      Create New Group
+    </button>
+  </div>
+
+  <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="groupModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none">
+      <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+        <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
+          <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalScrollableLabel">
+            New Group
+          </h5>
+          <button type="button"
+            class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
+            data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body relative p-4">
+          <form  class="mt-3" action="/groups/" method="post">
+            {% csrf_token %}
+            <div class="form-group mb-4">
+              <input name="name" type="text" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Group Name">
+            </div>
+            <button type="submit" class=" w-full px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+              Create
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
+
 {% endblock %}

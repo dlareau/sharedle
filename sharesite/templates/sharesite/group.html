@@ -1,0 +1,24 @@
+{% extends "sharesite/base.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="flex flex-col justify-center mt-10 items-center">
+    <h1 class="text-2xl">{{group.name}}</h1>
+    <button id="share-group-btn" type="button" class="mt-2 mb-2 px-6 py-1 bg-gray-400 text-white text-sm leading-tight rounded shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-600 active:shadow-lg">
+      Copy Invite Link
+    </button>
+    <div class="flex flex-wrap flex-row justify-center items-center">
+      {% for player in player_data %}
+        <div class="flex flex-col justify-center items-center m-4">
+          <h1>{{player.name}}</h1>
+          {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl" grid=player.grid%}
+        </div>
+      {% endfor%}
+    </div>
+  </div>
+  <script type="text/javascript">
+    $("#share-group-btn").click(function() {
+      navigator.clipboard.writeText("http://{{request.get_host}}/invite/{{group.id}}/{{group.secret}}/");
+    });
+  </script>
+{% endblock %}

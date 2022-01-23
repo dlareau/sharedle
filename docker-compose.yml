@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+    image: django_sharedle
+    command: bash -c "python3 /code/manage.py migrate --no-input && gunicorn --workers=2 --bind=0.0.0.0:8000 sharedle.wsgi:application"
+    restart: always
+    volumes:
+      #- .:/code  # Enables live modification of django files
+      - data:/code/data
+      - static:/static
+    environment:
+      - DOMAIN
+      - DJANGO_SECRET_KEY
+      - DJANGO_ENABLE_DEBUG
+      - DJANGO_SETTINGS_MODULE=sharedle.settings.env_settings
+      - DATABASE_URL=sqlite:////code/data/db.sqlite
+
+  web:
+    restart: always
+    build:
+      context: .
+      dockerfile: apacheDockerfile
+    depends_on:
+      - app
+    ports:
+      - "8080:80"
+      - "8043:443"
+    volumes:
+      - static:/static
+    tty: true
+
+volumes:
+  static:
+  data:

@@ -1,0 +1,15 @@
+FROM debian:10
+
+RUN apt-get update && \
+    apt-get install -y apache2
+
+COPY apache.conf /etc/apache2/sites-available/sharedle.conf
+RUN rm /etc/apache2/sites-enabled/* && \
+    a2enmod proxy proxy_http proxy_html && \
+    a2ensite sharedle && \
+    mkdir -p /static
+
+EXPOSE 80
+
+ENTRYPOINT ["/usr/sbin/apache2ctl"]
+CMD ["-D", "FOREGROUND"]

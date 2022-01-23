@@ -1,10 +1,19 @@
 <div class="mt-4 grid grid-cols-5 {{spacing}} place-content-center">
-  {% with ''|center:30 as range %}
-  {% for _ in range %}
+  {% for tile in grid %}
     <div id="input-box-{{forloop.counter}}" 
-         class="tile empty {{width}} {{height}} {{text}} font-bold flex justify-center items-center"
+         class="tile
+        {% if tile.1 == 'G' %}
+            correct
+        {% elif tile.1 == 'Y' %}
+            semi-correct
+        {% elif tile.1 == 'B' %}
+            incorrect
+        {% else %}
+            empty
+        {% endif %}
+         {{width}} {{height}} {{text}} font-bold flex justify-center items-center"
          data-val="" data-tile="{{forloop.counter}}">
+         {{tile.0}}
     </div>
   {% endfor %}
-  {% endwith %}
 </div>

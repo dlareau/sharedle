@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as base_auth_views
 
 urlpatterns = [
     path('', include('sharesite.urls')),
     path('admin/', admin.site.urls),
+    path('accounts/logout/', base_auth_views.LogoutView.as_view(), name='logout', kwargs={'next_page': '/'}),
     path("__reload__/", include("django_browser_reload.urls")),
 ]
