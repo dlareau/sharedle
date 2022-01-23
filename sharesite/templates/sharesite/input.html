@@ -21,24 +21,22 @@
     </div>
     <form id="wordle-data" method="post" class="flex flex-col justify-center items-center">
       {% csrf_token %}
-      {% if grid == "" %}
-        <input id="dummy-box" type="text" placeholder="text box" class="mt-2"></input>
-      {% endif %}
       <div class="mt-4 grid grid-cols-5 gap-2 place-content-center">
         {% with ''|center:30 as range %}
         {% for _ in range %}
           <div id="input-box-{{forloop.counter}}" 
-               class="tile empty w-16 h-16 text-4xl font-bold flex justify-center items-center"
+               class="tile empty sm:w-16 sm:h-16 w-14 h-14 text-4xl font-bold flex justify-center items-center"
                data-val="" data-tile="{{forloop.counter}}">
           </div>
         {% endfor %}
         {% endwith %}
       </div>
-      {% if grid == "" %}
-        <button type="submit" class="mt-6 inline-block px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Submit</button>
-      {% else %}
-        <button type="submit" class="mt-6 inline-block px-6 py-2.5 bg-red-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">Clear</button>
-      {% endif %}
     </form>
+    {% if grid == "" %}
+      <input id="dummy-box" onkeyup="textboxToGrid();" onkeydown="textboxToGrid();" type="text" placeholder="text box" class="mt-2 uppercase"></input>
+      <button id="form-submit" type="submit" class="mt-6 inline-block px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">Submit</button>
+    {% else %}
+      <button id="form-submit" type="submit" class="mt-6 inline-block px-6 py-2.5 bg-red-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">Clear</button>
+    {% endif %}
   </div>
 {% endblock %}
