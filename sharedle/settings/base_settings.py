@@ -124,4 +124,6 @@ TAILWIND_APP_NAME = 'theme'
 
 LOGOUT_REDIRECT_URL = "/"
 
-LOGIN_URL = "/"
+LOGIN_REDIRECT_URL = "/"
+
+LOGIN_URL = "/accounts/login"

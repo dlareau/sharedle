@@ -20,6 +20,7 @@ from django.contrib.auth import views as base_auth_views
 urlpatterns = [
     path('', include('sharesite.urls')),
     path('admin/', admin.site.urls),
+    path('accounts/login/', base_auth_views.LoginView.as_view(template_name='sharesite/login.html')),
     path('accounts/logout/', base_auth_views.LogoutView.as_view(), name='logout', kwargs={'next_page': '/'}),
     path("__reload__/", include("django_browser_reload.urls")),
 ]

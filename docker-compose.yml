@@ -12,7 +12,7 @@ services:
       - data:/code/data
       - static:/static
     environment:
-      - DOMAIN
+      - DOMAIN=https://sharedle.dlareau.com
       - DJANGO_SECRET_KEY
       - DJANGO_ENABLE_DEBUG
       - DJANGO_SETTINGS_MODULE=sharedle.settings.env_settings

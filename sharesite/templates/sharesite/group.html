@@ -18,7 +18,7 @@
   </div>
   <script type="text/javascript">
     $("#share-group-btn").click(function() {
-      navigator.clipboard.writeText("http://{{request.get_host}}/invite/{{group.id}}/{{group.secret}}/");
+      navigator.clipboard.writeText("{{domain}}/invite/{{group.id}}/{{group.secret}}/");
     });
   </script>
 {% endblock %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from datetime import datetime, date
 from django.contrib.auth.decorators import login_required
@@ -6,8 +6,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.db import IntegrityError
 from django.http import JsonResponse
+from django.conf import settings
 
 from .models import Group, GroupMember, Submission, Wordle
+
 
 # Create your views here.
 def index(request):
@@ -16,12 +18,14 @@ def index(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
+            if("next" in request.POST and request.POST.get("next") != ""):
+                return redirect(request.POST.get('next'))
     else:
         form = UserCreationForm()
     return render(request, "sharesite/index.html", {"form": form})
 
 
-def login_user(request):
+def login_async(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
@@ -59,7 +63,10 @@ def groups(request):
         name = request.POST.get("name")
         group = Group.objects.create(name=name, owner=request.user)
         GroupMember.objects.create(group=group, user=request.user, nickname=request.user.username)
-    groups = request.user.share_groups.all()
+    if("all" in request.GET and request.user.is_superuser):
+        groups = Group.objects.all()
+    else:
+        groups = request.user.share_groups.all()
     return render(request, "sharesite/groups.html", {"groups": groups})
 
 
@@ -101,4 +108,4 @@ def group(request, group_id):
         except Submission.DoesNotExist:
             grid = list(zip(" " * 30, "W" * 30))
         data.append({"name": member.nickname, "grid": grid})
-    return render(request, "sharesite/group.html", {"player_data": data, "group": group})
+    return render(request, "sharesite/group.html", {"player_data": data, "group": group, "domain": settings.DOMAIN})
