@@ -7,6 +7,8 @@ services:
     image: django_sharedle
     command: bash -c "python3 /code/manage.py migrate --no-input && gunicorn --workers=2 --bind=0.0.0.0:8000 sharedle.wsgi:application"
     restart: always
+    networks:
+      local:
     volumes:
       #- .:/code  # Enables live modification of django files
       - data:/code/data
@@ -25,9 +27,24 @@ services:
       dockerfile: apacheDockerfile
     depends_on:
       - app
-    ports:
-      - "8080:80"
-      - "8043:443"
+    networks:
+      local:
+      proxy-net:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy-net"
+      - "traefik.http.routers.sharedle.entrypoints=web"
+      - "traefik.http.routers.sharedle.rule=Host(`sharedle.dlareau.com`)"
+      - "traefik.http.middlewares.base_https.redirectscheme.scheme=https"
+      - "traefik.http.routers.sharedle.middlewares=base_https"
+
+      # This just routes to the actual service
+      - "traefik.http.routers.sharedle_secure.entrypoints=websecure"
+      - "traefik.http.routers.sharedle_secure.rule=Host(`sharedle.dlareau.com`)"
+ #     - "traefik.http.routers.sharedle_secure.service=sharedle"
+      - "traefik.http.routers.sharedle_secure.tls.certresolver=puzzlehunt_resolver"
+
+      - "traefik.http.services.sharedle.loadbalancer.server.port=80"
     volumes:
       - static:/static
     tty: true
@@ -35,3 +52,8 @@ services:
 volumes:
   static:
   data:
+
+networks:
+  proxy-net:
+    external: true
+  local:

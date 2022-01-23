@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from datetime import datetime, date
+from django.utils import timezone
 from django.contrib.auth.models import User
 
 
@@ -45,7 +46,7 @@ class Wordle(models.Model):
 
     @classmethod
     def get_current_wordle(cls):
-        day = (datetime.now().date() - date(2021, 6, 20)).days
+        day = (timezone.now().date() - date(2021, 6, 19)).days
         return cls.objects.get(day=day)
 
 
