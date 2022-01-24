@@ -15,9 +15,11 @@
         </div>
       {% endfor%}
     </div>
-    <button type="button" class="mt-5 px-6 py-2.5 bg-gray-400 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-600 active:shadow-lg transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#groupModalCenter">
-      Manage Group
-    </button>
+    {% if request.user == group.owner %}
+      <button type="button" class="mt-5 px-6 py-2.5 bg-gray-400 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-600 active:shadow-lg transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#groupModalCenter">
+        Manage Group
+      </button>
+    {% endif %}
   </div>
   <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="groupModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none">
