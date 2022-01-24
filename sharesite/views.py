@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect
-from django.shortcuts import get_object_or_404
 from datetime import datetime, date
+from django.conf import settings
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.db.models.functions import Lower
 from django.http import JsonResponse
-from django.conf import settings
+from django.shortcuts import get_object_or_404, render, redirect
 
 from .models import Group, GroupMember, Submission, Wordle
 
@@ -85,8 +86,12 @@ def invite(request, group_id, secret):
 def group(request, group_id):
     wordle = Wordle.get_current_wordle()
     group = get_object_or_404(Group, id=group_id)
-    members = GroupMember.objects.filter(group=group)
-    done = Submission.objects.filter(user=request.user, wordle=wordle).count() == 1
+    if("all" in request.GET and request.user.is_superuser):
+        members = User.objects.all()
+        done = True
+    else:
+        members = GroupMember.objects.filter(group=group).order_by(Lower('nickname'))
+        done = Submission.objects.filter(user=request.user, wordle=wordle).count() == 1
     data = []
     for member in members:
         try:

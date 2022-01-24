@@ -46,7 +46,10 @@ class Wordle(models.Model):
 
     @classmethod
     def get_current_wordle(cls):
-        day = (timezone.now().date() - date(2021, 6, 19)).days
+        print(timezone.localtime())
+        print(timezone.localtime().date())
+        day = (timezone.localtime().date() - date(2021, 6, 19)).days
+        print(day)
         return cls.objects.get(day=day)
 
 
