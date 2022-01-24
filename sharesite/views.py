@@ -40,8 +40,17 @@ def login_async(request):
 
 
 @login_required
+def update_profile(request):
+    if request.method == "POST":
+        if "timezone" in request.POST:
+            request.user.profile.timezone = request.POST.get("timezone")
+            request.user.profile.save()
+            return JsonResponse({"result": "success"})
+    return JsonResponse({"result": "invalid request"})
+
+@login_required
 def input(request):
-    wordle = Wordle.get_current_wordle()
+    wordle = Wordle.get_current_wordle(request.user)
     if request.method == "POST":
         if "grid" in request.POST:
             grid = request.POST.get('grid')
@@ -96,7 +105,7 @@ def group(request, group_id):
             group.delete()
             return redirect("/groups/")
 
-    wordle = Wordle.get_current_wordle()
+    wordle = Wordle.get_current_wordle(request.user)
     if("all" in request.GET and request.user.is_superuser):
         members = User.objects.all()
         done = True
@@ -108,20 +117,11 @@ def group(request, group_id):
         try:
             submission = Submission.objects.get(user=member.user, wordle=wordle)
             guess = submission.guesses.ljust(30)
-            colors = ""
-            for i in range(30):
-                if(guess[i] == " "):
-                    colors = colors + "W"
-                elif(guess[i] == wordle.answer[i % 5]):
-                    colors = colors + "G"
-                elif(guess[i] in wordle.answer):
-                    colors = colors + "Y"
-                else:
-                    colors = colors + "B"
+            colors = submission.get_colors()
             if(not done):
                 guess = " " * 30
             grid = list(zip(guess, colors))
         except Submission.DoesNotExist:
             grid = list(zip(" " * 30, "W" * 30))
         data.append({"name": member.nickname, "pk": member.pk, "grid": grid})
-    return render(request, "sharesite/group.html", {"player_data": data, "group": group, "domain": settings.DOMAIN})
+    return render(request, "sharesite/group.html", {"wordle": wordle, "player_data": data, "group": group, "domain": settings.DOMAIN})

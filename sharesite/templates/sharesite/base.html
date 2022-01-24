@@ -1,5 +1,8 @@
 {% load tailwind_tags %}
 {% load static %}
+{% load sharesite_tags %}
+{% set_timezones %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -15,24 +18,24 @@
     <script src="/static/js/index.min.js"></script>
     {% block includes %} {% endblock includes %}
   </head>
-  <body class="bg-white font-sans-serif leading-normal tracking-normal">
+  <body class="bg-white dark:bg-slate-900 dark:text-slate-200 font-sans-serif leading-normal tracking-normal">
     <header class="flex justify-center mt-5 items-center text-4xl font-bold tracking-wider pl-4 pr-4">
       <div class="flex justify-center items-center basis-full sm:basis-1/2 border-b-2 border-gray-500">
-        <a href="/input/"><img src="{% static 'sharesite/edit.svg' %}" width="30px" class="ml-2"></a>
+        <a href="/input/"><img src="{% static 'sharesite/edit.svg' %}" width="30px" class="ml-2 dark:invert"></a>
         <div class="w-7 ml-2"></div>
-        <a href="/" class="mr-5 ml-5 grow text-center"><h1> SHAREDLE </h1></a>
-        <a href="/groups/"><img src="{% static 'sharesite/group.png' %}" width="30px" class="mr-2"></a>
+        <a href="/" class="mr-5 ml-5 grow text-center dark:text-white"><h1> SHAREDLE </h1></a>
+        <a href="/groups/"><img src="{% static 'sharesite/group.png' %}" width="30px" class="mr-2 dark:invert"></a>
         <button type="button" class="transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-          <img src="{% static 'sharesite/user.svg' %}" width="33px" class="mr-2 mb-1">
+          <img src="{% static 'sharesite/user.svg' %}" width="33px" class="mr-2 mb-1 dark:invert">
         </button>
       </div>
     </header>
 
     <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
       <div class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none">
-        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-          <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-            <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalScrollableLabel">
+        <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto modal-color bg-clip-padding rounded-md outline-none text-current">
+          <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 dark:border-gray-500 rounded-t-md">
+            <h5 class="text-xl font-medium leading-normal" id="exampleModalScrollableLabel">
               {% if request.user.is_anonymous %}
                 Login
               {% else %}
@@ -48,33 +51,40 @@
               <form id="login-form" class="mt-3" action="/login/async/" method="post">
                 {% csrf_token %}
                 <div class="form-group mb-4">
-                  <input name="username" type="text" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Username">
+                  <input name="username" type="text" class="w-full text-form-input" placeholder="Username">
                 </div>
                 <div class="form-group mb-4">
-                  <input name="password" type="password" class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Password">
+                  <input name="password" type="password" class="w-full text-form-input" placeholder="Password">
                 </div>
                 <p id="incorrect-login" class="text-red-500 mb-3" style="display: none">Incorrect Username/Password</p>
-                <button type="submit" class=" w-full px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+                <button type="submit" class=" w-full form-button button-blue">
                   Log In
                 </button>
               </form>
             {% else %}
-              <p>
-                Some day maybe you can change your user details here, for now you can only log out.
-              </p>
+              Set your timezone:
+              <form id="profile-form" class="mt-3 " action="/profile/" method="post">
+                {% csrf_token %}
+                <div class="form-group mb-4 mt-4 flex flex-row">
+                  <select name="timezone" class="mr-2 basis-1/2 text-form-input" aria-label="Timezone Select">
+                    {% for timezone in common_timezones %}
+                      <option value="{{timezone}}" {% if request.user.profile.timezone == timezone %}selected{% endif %}>{{timezone}}</option>
+                    {% endfor%}
+                  </select>
+                  <button type="submit" class="form-button button-blue">
+                    Set Timezone
+                  </button>
+                  <input type="hidden" name="action" value="remove">
+                </div>
+              </form>
             {% endif %}
           </div>
           <div
-            class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-            <button type="button"
-              class="inline-block px-6 py-2.5 bg-purple-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
-              data-bs-dismiss="modal">
-              Close
-            </button>
+            class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 dark:border-gray-500 rounded-b-md">
             {% if not request.user.is_anonymous %}
               <a href="/accounts/logout/">
                 <button type="button"
-                class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1">
+                class="inline-block form-button button-blue text-sm ml-1">
                   Log Out
                 </button>
               </a>
@@ -104,6 +114,20 @@
                   location.reload();
                 } else {
                   $("#incorrect-login").show();
+                }
+              }
+          });
+        });
+        $("#profile-form").submit(function(e) {
+          e.preventDefault();
+          $.ajax({
+              url: '/profile/',
+              type: 'post',
+              dataType: 'json',
+              data: $('#profile-form').serialize(),
+              success: function(data) {
+                if(data["result"] == "success") {
+                  location.reload();
                 }
               }
           });

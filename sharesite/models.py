@@ -1,9 +1,14 @@
 from django.db import models
 import uuid
+import pytz
 from datetime import datetime, date
 from django.utils import timezone
 from django.contrib.auth.models import User
 
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    timezone = models.CharField(max_length=50)
 
 class Group(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -45,11 +50,8 @@ class Wordle(models.Model):
     day = models.IntegerField()
 
     @classmethod
-    def get_current_wordle(cls):
-        print(timezone.localtime())
-        print(timezone.localtime().date())
-        day = (timezone.localtime().date() - date(2021, 6, 19)).days
-        print(day)
+    def get_current_wordle(cls, user):
+        day = (timezone.localtime(timezone=pytz.timezone(user.profile.timezone)).date() - date(2021, 6, 19)).days
         return cls.objects.get(day=day)
 
 
@@ -67,6 +69,26 @@ class Submission(models.Model):
     wordle = models.ForeignKey(Wordle, on_delete=models.CASCADE)
     guesses = models.CharField(max_length=40)
     submission_time = models.DateTimeField()
+
+    def get_colors(self):
+        colors = ""
+        guesses = self.guesses.ljust(30)
+        for word_idx in range(6):
+            word = self.wordle.answer
+            word_colors = ["W", "W", "W", "W", "W"]
+            guess = guesses[word_idx*5:(word_idx*5)+5]
+            for letter_idx in range(5):
+                if(guess[letter_idx] == self.wordle.answer[letter_idx]):
+                    word_colors[letter_idx] = "G"
+                    word = word.replace(guess[letter_idx], "", 1)
+            for letter_idx in range(5):
+                if(guess[letter_idx] in word):
+                    word_colors[letter_idx] = "Y"
+                    word = word.replace(guess[letter_idx], "", 1)
+                elif(guess[letter_idx] != " " and word_colors[letter_idx] != "G"):
+                    word_colors[letter_idx] = "B"
+            colors = colors + "".join(word_colors)
+        return colors
 
     def __str__(self):
         return f"{self.user.username} : Day {self.wordle.day} : {self.guesses}"

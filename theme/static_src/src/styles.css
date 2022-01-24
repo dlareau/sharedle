@@ -4,22 +4,46 @@
 
 @layer components {
   .empty {
-    @apply border-gray-300 bg-white text-black border-2;
+    @apply border-gray-300 dark:border-gray-500 text-black border-2;
   }
 
   .current {
-    @apply border-black border-2;
+    @apply border-black dark:border-white border-2;
   }
   
   .correct {
-  	@apply bg-green-600 text-white;
+  	@apply bg-green-600 dark:bg-green-700 text-white;
   }
 
   .semi-correct {
-  	@apply bg-yellow-500 text-white;
+  	@apply bg-yellow-500 dark:bg-yellow-600 text-white;
   }
 
   .incorrect {
-  	@apply bg-gray-500 text-white;
+  	@apply bg-gray-500 dark:bg-gray-700 text-white;
+  }
+
+  .text-form-input {
+    @apply form-control block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none;
+  }
+
+  .form-button {
+    @apply px-6 py-2.5 text-white leading-tight uppercase rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg transition duration-150 ease-in-out;
+  }
+
+  .button-gray {
+    @apply bg-gray-400 hover:bg-gray-500 focus:bg-gray-500 active:bg-gray-600;
+  }
+
+  .button-blue {
+    @apply bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-800;
+  }
+
+  .button-red {
+    @apply bg-red-600 hover:bg-red-700 focus:bg-red-700 active:bg-red-800;
+  }
+
+  .modal-color {
+    @apply bg-white dark:bg-slate-700;
   }
 }

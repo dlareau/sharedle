@@ -4,7 +4,8 @@
 {% block content %}
   <div class="flex flex-col justify-center mt-10 items-center">
     <h1 class="text-2xl">{{group.name}}</h1>
-    <button id="share-group-btn" type="button" class="mt-2 mb-2 px-6 py-1 bg-gray-400 text-white text-sm leading-tight rounded shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-600 active:shadow-lg">
+    Day {{wordle.day}}
+    <button id="share-group-btn" type="button" class="mt-2 mb-2 px-6 py-1 text-white text-sm leading-tight rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg button-gray">
       Copy Invite Link
     </button>
     <div class="flex flex-wrap flex-row justify-center items-center">
@@ -16,16 +17,16 @@
       {% endfor%}
     </div>
     {% if request.user == group.owner %}
-      <button type="button" class="mt-5 px-6 py-2.5 bg-gray-400 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-gray-500 hover:shadow-lg focus:bg-gray-500 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-600 active:shadow-lg transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#groupModalCenter">
+      <button type="button" class="my-5 form-button button-gray" data-bs-toggle="modal" data-bs-target="#groupModalCenter">
         Manage Group
       </button>
     {% endif %}
   </div>
   <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="groupModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none">
-      <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-        <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-          <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalScrollableLabel">
+      <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto modal-color bg-clip-padding rounded-md outline-none text-current">
+        <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 dark:border-gray-500 rounded-t-md">
+          <h5 class="text-xl font-medium leading-normal" id="exampleModalScrollableLabel">
             Group Settings
           </h5>
           <button type="button"
@@ -36,8 +37,8 @@
           <form  class="mt-3 " action="/group/{{group.id}}/" method="post">
             {% csrf_token %}
             <div class="form-group mb-4 flex flex-row">
-              <input name="name" value="{{group.name}}" type="text" class="mr-2 form-control block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Group Name">
-              <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+              <input name="name" value="{{group.name}}" type="text" class="mr-2 text-form-input" placeholder="Group Name">
+              <button type="submit" class="form-button button-blue">
                 Rename Group
               </button>
               <input type="hidden" name="action" value="rename">
@@ -46,12 +47,12 @@
           <form  class="mt-3 " action="/group/{{group.id}}/" method="post">
             {% csrf_token %}
             <div class="form-group mb-4 mt-4 flex flex-row">
-              <select name="user" class="mr-2 basis-1/2 form-select appearance-none block px-3 py-0 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Player Select">
+              <select name="user" class="mr-2 basis-1/2 text-form-input" aria-label="Player Select">
                 {% for player in player_data %}
                   <option value="{{player.pk}}">{{player.name}}</option>
                 {% endfor%}
               </select>
-              <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+              <button type="submit" class="form-button button-blue">
                 Remove Person
               </button>
               <input type="hidden" name="action" value="remove">
@@ -59,7 +60,7 @@
           </form>
           <form  class="mt-3 flex justify-center items-center" action="/group/{{group.id}}/" method="post">
             {% csrf_token %}
-            <button type="submit" onclick="return confirm('Are you sure?')" class="w-1/2 mt-6 px-6 py-2.5 bg-red-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">
+            <button type="submit" onclick="return confirm('Are you sure?')" class="w-1/2 mt-6 form-button button-red">
               Delete Group
             </button>
             <input type="hidden" name="action" value="delete">
