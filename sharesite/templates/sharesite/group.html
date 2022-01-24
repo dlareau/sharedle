@@ -31,7 +31,37 @@
             data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body relative p-4">
-          Soon
+          <form  class="mt-3 " action="/group/{{group.id}}/" method="post">
+            {% csrf_token %}
+            <div class="form-group mb-4 flex flex-row">
+              <input name="name" value="{{group.name}}" type="text" class="mr-2 form-control block px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" placeholder="Group Name">
+              <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+                Rename Group
+              </button>
+              <input type="hidden" name="action" value="rename">
+            </div>
+          </form>
+          <form  class="mt-3 " action="/group/{{group.id}}/" method="post">
+            {% csrf_token %}
+            <div class="form-group mb-4 mt-4 flex flex-row">
+              <select name="user" class="mr-2 basis-1/2 form-select appearance-none block px-3 py-0 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Player Select">
+                {% for player in player_data %}
+                  <option value="{{player.pk}}">{{player.name}}</option>
+                {% endfor%}
+              </select>
+              <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out">
+                Remove Person
+              </button>
+              <input type="hidden" name="action" value="remove">
+            </div>
+          </form>
+          <form  class="mt-3 flex justify-center items-center" action="/group/{{group.id}}/" method="post">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('Are you sure?')" class="w-1/2 mt-6 px-6 py-2.5 bg-red-600 text-white text-medium leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out">
+              Delete Group
+            </button>
+            <input type="hidden" name="action" value="delete">
+          </form>
         </div>
       </div>
     </div>

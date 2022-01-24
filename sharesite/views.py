@@ -84,8 +84,19 @@ def invite(request, group_id, secret):
 
 @login_required
 def group(request, group_id):
-    wordle = Wordle.get_current_wordle()
     group = get_object_or_404(Group, id=group_id)
+    if request.method == "POST" and "action" in request.POST and request.user == group.owner:
+        action = request.POST.get("action")
+        if(action == "rename"):
+            group.name = request.POST.get("name")
+            group.save()
+        elif(action == "remove"):
+            GroupMember.objects.get(pk=request.POST.get("user")).delete()
+        elif(action == "delete"):
+            group.delete()
+            return redirect("/groups/")
+
+    wordle = Wordle.get_current_wordle()
     if("all" in request.GET and request.user.is_superuser):
         members = User.objects.all()
         done = True
@@ -112,5 +123,5 @@ def group(request, group_id):
             grid = list(zip(guess, colors))
         except Submission.DoesNotExist:
             grid = list(zip(" " * 30, "W" * 30))
-        data.append({"name": member.nickname, "grid": grid})
+        data.append({"name": member.nickname, "pk": member.pk, "grid": grid})
     return render(request, "sharesite/group.html", {"player_data": data, "group": group, "domain": settings.DOMAIN})
