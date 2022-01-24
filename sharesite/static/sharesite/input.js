@@ -36,6 +36,7 @@ function populateGrid(grid_str) {
   for (var i = 0; i < grid_str.length; i++) {
     $("#input-box-" + (i + 1)).text(grid_str[i]);
     $("#input-box-" + (i + 1)).data("val", grid_str[i]);
+    $("#input-box-" + (i + 1)).removeClass("empty");
     if(grid_str[i] == correctWord[(i) % 5]) {
       $("#input-box-" + (i + 1)).addClass("correct");
     } else if (correctWord.indexOf(grid_str[i]) !== -1) {
