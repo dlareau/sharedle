@@ -14,7 +14,7 @@ services:
       - data:/code/data
       - static:/static
     environment:
-      - DOMAIN=https://sharedle.dlareau.com
+      - DOMAIN=https://www.sharedle.net
       - DJANGO_SECRET_KEY
       - DJANGO_ENABLE_DEBUG
       - DJANGO_SETTINGS_MODULE=sharedle.settings.env_settings
@@ -34,13 +34,13 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy-net"
       - "traefik.http.routers.sharedle.entrypoints=web"
-      - "traefik.http.routers.sharedle.rule=Host(`sharedle.dlareau.com`)"
+      - "traefik.http.routers.sharedle.rule=Host(`sharedle.dlareau.com`) || Host(`www.sharedle.net`)"
       - "traefik.http.middlewares.base_https.redirectscheme.scheme=https"
       - "traefik.http.routers.sharedle.middlewares=base_https"
 
       # This just routes to the actual service
       - "traefik.http.routers.sharedle_secure.entrypoints=websecure"
-      - "traefik.http.routers.sharedle_secure.rule=Host(`sharedle.dlareau.com`)"
+      - "traefik.http.routers.sharedle_secure.rule=Host(`sharedle.dlareau.com`) || Host(`www.sharedle.net`)"
  #     - "traefik.http.routers.sharedle_secure.service=sharedle"
       - "traefik.http.routers.sharedle_secure.tls.certresolver=puzzlehunt_resolver"
 
