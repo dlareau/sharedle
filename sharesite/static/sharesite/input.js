@@ -55,7 +55,7 @@ function populateGrid(grid_str) {
       grid_idx = i*5+j+1;
       $("#input-box-" + grid_idx).text(guess[j]);
       $("#input-box-" + grid_idx).data("val", guess[j]);
-      $("#input-box-" + (i + 1)).removeClass("empty");
+      $("#input-box-" + grid_idx).removeClass("empty");
       if(correctWord[j] == guess[j]){
         $("#input-box-" + grid_idx).addClass("correct");
         word = word.replace(guess[j], "");
