@@ -124,16 +124,21 @@ def invite(request, group_id, secret):
 @login_required
 def group(request, group_id):
     group = get_object_or_404(Group, id=group_id)
-    if request.method == "POST" and "action" in request.POST and request.user == group.owner:
+    if request.method == "POST" and "action" in request.POST:
         action = request.POST.get("action")
-        if(action == "rename"):
-            group.name = request.POST.get("name")
-            group.save()
-        elif(action == "remove"):
-            GroupMember.objects.get(pk=request.POST.get("user")).delete()
-        elif(action == "delete"):
-            group.delete()
-            return redirect("/groups/")
+        if request.user == group.owner:
+            if(action == "rename"):
+                group.name = request.POST.get("name")
+                group.save()
+            elif(action == "remove"):
+                GroupMember.objects.get(pk=request.POST.get("user")).delete()
+            elif(action == "delete"):
+                group.delete()
+                return redirect("/groups/")
+        else:
+            if(action == "leave"):
+                GroupMember.objects.get(user=request.user, group=group).delete()
+                return redirect("/groups/")
 
     day = get_current_user_day(request.user)
     is_current_day = True

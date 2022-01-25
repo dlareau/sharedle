@@ -20,6 +20,16 @@
       <button type="button" class="my-5 form-button button-gray" data-bs-toggle="modal" data-bs-target="#groupModalCenter">
         Manage Group
       </button>
+    {% else %}
+    <form  class="mt-3 " action="/group/{{group.id}}/" method="post">
+      {% csrf_token %}
+      <div class="form-group mb-4 flex flex-row">
+        <button type="submit" class="form-button button-red">
+          Leave Group
+        </button>
+        <input type="hidden" name="action" value="leave">
+      </div>
+    </form>
     {% endif %}
   </div>
   <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="groupModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
