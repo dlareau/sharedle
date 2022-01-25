@@ -55,10 +55,14 @@ def update_profile(request):
 
 @login_required
 def input(request):
+    day = get_current_user_day(request.user)
+    is_current_day = True
     if "day" in request.GET:
-        day = request.GET.get("day")
-    else:
-        day = get_current_user_day(request.user)
+        request_day = int(request.GET.get("day"))
+        if(request_day < day):
+            day = request_day
+            is_current_day = False
+
     wordle = Wordle.objects.get(day=day)
     if request.method == "POST":
         if "grid" in request.POST:
@@ -73,7 +77,7 @@ def input(request):
     except Submission.DoesNotExist:
         grid = ""
 
-    return render(request, "sharesite/input.html", {"grid": grid, "correct_word": wordle.answer, "day": day})
+    return render(request, "sharesite/input.html", {"grid": grid, "correct_word": wordle.answer, "day": day, "is_current_day": is_current_day})
 
 
 @login_required
@@ -86,14 +90,18 @@ def groups(request):
         groups = Group.objects.all()
     else:
         groups = request.user.share_groups.all()
+    day = get_current_user_day(request.user)
+    is_current_day = True
     if "day" in request.GET:
-        day = request.GET.get("day")
-    else:
-        day = get_current_user_day(request.user)
+        request_day = int(request.GET.get("day"))
+        if(request_day < day):
+            day = request_day
+            is_current_day = False
+
     wordle = Wordle.objects.get(day=day)
     for group in groups:
         group.num_finished_curr = group.num_finished(wordle)
-    return render(request, "sharesite/groups.html", {"groups": groups, "day": day})
+    return render(request, "sharesite/groups.html", {"groups": groups, "day": day, "is_current_day": is_current_day})
 
 
 @login_required
@@ -121,10 +129,14 @@ def group(request, group_id):
             group.delete()
             return redirect("/groups/")
 
+    day = get_current_user_day(request.user)
+    is_current_day = True
     if "day" in request.GET:
-        day = request.GET.get("day")
-    else:
-        day = get_current_user_day(request.user)
+        request_day = int(request.GET.get("day"))
+        if(request_day < day):
+            day = request_day
+            is_current_day = False
+
     wordle = Wordle.objects.get(day=day)
     if("all" in request.GET and request.user.is_superuser):
         members = User.objects.all()
@@ -144,4 +156,4 @@ def group(request, group_id):
         except Submission.DoesNotExist:
             grid = list(zip(" " * 30, "W" * 30))
         data.append({"name": member.nickname, "pk": member.pk, "grid": grid})
-    return render(request, "sharesite/group.html", {"wordle": wordle, "player_data": data, "group": group, "domain": settings.DOMAIN, "day": day})
+    return render(request, "sharesite/group.html", {"wordle": wordle, "player_data": data, "group": group, "domain": settings.DOMAIN, "day": day, "is_current_day": is_current_day})
