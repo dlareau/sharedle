@@ -21,9 +21,7 @@ class Group(models.Model):
     def num_members(self):
         return len(self.users.all())
 
-    @property
-    def num_finished(self):
-        wordle = Wordle.get_current_wordle()
+    def num_finished(self, wordle):
         submissions = Submission.objects.filter(wordle=wordle, user__share_groups__id=self.id)
         return len(submissions)
 

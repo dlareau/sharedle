@@ -77,6 +77,9 @@ def groups(request):
         groups = Group.objects.all()
     else:
         groups = request.user.share_groups.all()
+    wordle = Wordle.get_current_wordle(request.user)
+    for group in groups:
+        group.num_finished_curr = group.num_finished(wordle)
     return render(request, "sharesite/groups.html", {"groups": groups})
 
 

@@ -62,13 +62,14 @@ function populateGrid(grid_str) {
       }
     }
     for (var j = 0; j < guess.length; j++) {
-      console.log(word);
       grid_idx = i*5+j+1;
-      if(word.indexOf(guess[j]) != -1){
-        $("#input-box-" + grid_idx).addClass("semi-correct");
-        word = word.replace(guess[j], "");
-      } else if(correctWord[j] != guess[j]) {
-        $("#input-box-" + grid_idx).addClass("incorrect");
+      if(correctWord[j] != guess[j]){
+        if(word.indexOf(guess[j]) != -1){
+          $("#input-box-" + grid_idx).addClass("semi-correct");
+          word = word.replace(guess[j], "");
+        } else {
+          $("#input-box-" + grid_idx).addClass("incorrect");
+        }
       }
     }
   }

@@ -8,9 +8,9 @@
       {% for group in groups %}
         <a href="/group/{{group.id}}/">
           <div class="flex flex-col justify-center items-center m-4 w-32 border-2 border-black dark:border-gray-400
-                      {% if group.num_members == group.num_finished %} bg-green-300 dark:bg-green-800 {% endif %}">
+                      {% if group.num_members == group.num_finished_curr %} bg-green-300 dark:bg-green-800 {% endif %}">
             <h3 class="text-xl text-center">{{group.name}}</h3>
-            <div class="text-4xl">{{group.num_finished}}/{{group.num_members}}</div>
+            <div class="text-4xl">{{group.num_finished_curr}}/{{group.num_members}}</div>
           </div>
         </a>
       {% endfor%}
