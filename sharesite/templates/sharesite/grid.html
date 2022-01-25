@@ -3,9 +3,17 @@
     <div id="input-box-{{forloop.counter}}" 
          class="tile
         {% if tile.1 == 'G' %}
-            correct
+            {% if request.user.profile.high_contrast %}
+                correct-hc
+            {% else %}
+                correct
+            {% endif %}
         {% elif tile.1 == 'Y' %}
-            semi-correct
+            {% if request.user.profile.high_contrast %}
+                semi-correct-hc
+            {% else %}
+                semi-correct
+            {% endif %}
         {% elif tile.1 == 'B' %}
             incorrect
         {% else %}

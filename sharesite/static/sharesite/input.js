@@ -57,7 +57,11 @@ function populateGrid(grid_str) {
       $("#input-box-" + grid_idx).data("val", guess[j]);
       $("#input-box-" + grid_idx).removeClass("empty");
       if(correctWord[j] == guess[j]){
-        $("#input-box-" + grid_idx).addClass("correct");
+        if(high_contrast) {
+          $("#input-box-" + grid_idx).addClass("correct-hc");
+        } else {
+          $("#input-box-" + grid_idx).addClass("correct");
+        }
         word = word.replace(guess[j], "");
       }
     }
@@ -65,7 +69,11 @@ function populateGrid(grid_str) {
       grid_idx = i*5+j+1;
       if(correctWord[j] != guess[j]){
         if(word.indexOf(guess[j]) != -1){
-          $("#input-box-" + grid_idx).addClass("semi-correct");
+          if(high_contrast) {
+            $("#input-box-" + grid_idx).addClass("semi-correct-hc");
+          } else {
+            $("#input-box-" + grid_idx).addClass("semi-correct");
+          }
           word = word.replace(guess[j], "");
         } else {
           $("#input-box-" + grid_idx).addClass("incorrect");
@@ -80,7 +88,9 @@ function clearGrid() {
     $("#input-box-" + (i + 1)).text("");
     $("#input-box-" + (i + 1)).data("val", "");
     $("#input-box-" + (i + 1)).removeClass("correct");
+    $("#input-box-" + (i + 1)).removeClass("correct-hc");
     $("#input-box-" + (i + 1)).removeClass("semi-correct");
+    $("#input-box-" + (i + 1)).removeClass("semi-correct-hc");
     $("#input-box-" + (i + 1)).removeClass("incorrect");
     $("#input-box-" + (i + 1)).addClass("empty");
   }
@@ -139,13 +149,6 @@ $('document').ready(function(){
         if(event.key.match(/^[a-z]$/i) && !event.ctrlKey && !event.metaKey && !event.altKey) {
           $("#input-box-" + index).text(event.key.toUpperCase());
           $("#input-box-" + index).data("val", event.key.toUpperCase());
-          if(event.key.toUpperCase() == correctWord[(index - 1) % 5]) {
-            $("#input-box-" + index).addClass("correct");
-          } else if (correctWord.indexOf(event.key.toUpperCase()) !== -1) {
-            $("#input-box-" + index).addClass("semi-correct");
-          } else {
-            $("#input-box-" + index).addClass("incorrect");
-          }
           if(index <= 30){
             index++;
           }

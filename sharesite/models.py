@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     timezone = models.CharField(max_length=50)
+    high_contrast = models.BooleanField(default=False)
 
 
 class Group(models.Model):

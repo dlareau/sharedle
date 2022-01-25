@@ -11,7 +11,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
 import pytz
 
-from .models import Group, GroupMember, Submission, Wordle
+from .models import Group, GroupMember, Submission, Wordle, Profile
 
 def get_current_user_day(user):
     return (timezone.localtime(timezone=pytz.timezone(user.profile.timezone)).date() - date(2021, 6, 19)).days
@@ -23,6 +23,7 @@ def index(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Profile.objects.create(user=user, timezone=settings.TIME_ZONE)
             login(request, user)
             if("next" in request.POST and request.POST.get("next") != ""):
                 return redirect(request.POST.get('next'))
@@ -49,8 +50,13 @@ def update_profile(request):
     if request.method == "POST":
         if "timezone" in request.POST:
             request.user.profile.timezone = request.POST.get("timezone")
-            request.user.profile.save()
-            return JsonResponse({"result": "success"})
+        if "contrast" in request.POST:
+            request.user.profile.high_contrast = True
+        else:
+            request.user.profile.high_contrast = False
+        request.user.profile.save()
+
+        return JsonResponse({"result": "success"})
     return JsonResponse({"result": "invalid request"})
 
 @login_required

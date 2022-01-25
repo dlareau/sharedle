@@ -19,6 +19,14 @@
   	@apply bg-yellow-500 dark:bg-yellow-600 text-white;
   }
 
+  .correct-hc {
+    @apply bg-orange-500 dark:bg-orange-600 text-white;
+  }
+
+  .semi-correct-hc {
+    @apply bg-blue-300 dark:bg-blue-400 text-white;
+  }
+
   .incorrect {
   	@apply bg-gray-500 dark:bg-gray-700 text-white;
   }
