@@ -11,7 +11,8 @@
 {% endblock %}
 
 {% block content %}
-  <div class="flex flex-col justify-center mt-10 items-center">
+  {% include "sharesite/day_browser.html" %}
+  <div class="flex flex-col justify-center mt-6 items-center">
     <div class="flex flex-col w-full sm:w-1/2 pl-3 pr-3">
       <p class="m-1">You can just start typing, or paste in your results without clicking anything.</p>
       <p class="m-1">It is encouraged to type in your words so that once everyone is finished for the day,

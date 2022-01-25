@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block content %}
-  <div class="flex flex-col justify-center mt-10 items-center">
+  {% include "sharesite/day_browser.html" %}
+  <div class="flex flex-col justify-center mt-6 items-center">
     <h1 class="text-2xl">{{group.name}}</h1>
-    Day {{wordle.day}}
     <button id="share-group-btn" type="button" class="mt-2 mb-2 px-6 py-1 text-white text-sm leading-tight rounded shadow-md hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg button-gray">
       Copy Invite Link
     </button>
