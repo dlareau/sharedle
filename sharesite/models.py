@@ -74,7 +74,7 @@ class Submission(models.Model):
                     word_colors[letter_idx] = "G"
                     word = word.replace(guess[letter_idx], "", 1)
             for letter_idx in range(5):
-                if(guess[letter_idx] in word):
+                if(guess[letter_idx] in word and word_colors[letter_idx] != "G"):
                     word_colors[letter_idx] = "Y"
                     word = word.replace(guess[letter_idx], "", 1)
                 elif(guess[letter_idx] != " " and word_colors[letter_idx] != "G"):
