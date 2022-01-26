@@ -151,6 +151,10 @@ def group(request, group_id):
     wordle = Wordle.objects.get(day=day)
     if("all" in request.GET and request.user.is_superuser):
         members = User.objects.all()
+        # this is a big ol hack to make a User object look like a GroupMember object
+        for member in members:
+            member.user = member
+            member.nickname = member.username
         done = True
     else:
         members = GroupMember.objects.filter(group=group).order_by(Lower('nickname'))

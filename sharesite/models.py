@@ -40,7 +40,7 @@ class GroupMember(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nickname
+        return f"{self.nickname} => {self.group.name}" 
 
 
 class Wordle(models.Model):
@@ -74,11 +74,12 @@ class Submission(models.Model):
                     word_colors[letter_idx] = "G"
                     word = word.replace(guess[letter_idx], "", 1)
             for letter_idx in range(5):
-                if(guess[letter_idx] in word and word_colors[letter_idx] != "G"):
-                    word_colors[letter_idx] = "Y"
-                    word = word.replace(guess[letter_idx], "", 1)
-                elif(guess[letter_idx] != " " and word_colors[letter_idx] != "G"):
-                    word_colors[letter_idx] = "B"
+                if(word_colors[letter_idx] != "G"):
+                    if(guess[letter_idx] in word):
+                        word_colors[letter_idx] = "Y"
+                        word = word.replace(guess[letter_idx], "", 1)
+                    elif(guess[letter_idx] != " "):
+                        word_colors[letter_idx] = "B"
             colors = colors + "".join(word_colors)
         return colors
 

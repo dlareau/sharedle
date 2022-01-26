@@ -14,12 +14,10 @@
 {% block content %}
   {% include "sharesite/day_browser.html" %}
   <div class="flex flex-col justify-center mt-6 items-center">
-    <div class="flex flex-col w-full sm:w-1/2 pl-3 pr-3">
+    <div class="flex flex-col w-full sm:w-1/2 pl-3 pr-3 justify-center items-center">
       <p class="m-1">You can just start typing in your wordle grid.</p>
-     <!--  <p class="m-1">It is encouraged to type in your words so that once everyone is finished for the day,
-         you can see each other's guesses. If you simply paste in your grid, your guesses will not
-         be visible.</p> -->
       <p class="m-1">If needed, you can use the text box below to gain keyboard focus.</p>
+      <p class="m-1">Warning: This grid auto-colors as you type, don't start typing if you haven't completed the wordle for today.</p>
     </div>
     <form id="wordle-data" method="post" class="flex flex-col justify-center items-center">
       {% csrf_token %}
