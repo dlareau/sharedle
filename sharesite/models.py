@@ -1,8 +1,11 @@
 from django.db import models
 import uuid
+import re
 from datetime import datetime, date
 from django.contrib.auth.models import User
+from pathlib import Path
 
+from .utils import chunks
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -61,14 +64,45 @@ class Submission(models.Model):
     wordle = models.ForeignKey(Wordle, on_delete=models.CASCADE)
     guesses = models.CharField(max_length=40)
     submission_time = models.DateTimeField()
+    statistics_data = models.JSONField(blank=True, null=True)
+
+    @property
+    def statistics(self):
+        if(self.statistics_data is None):
+            # last_guess_chance
+            words = []
+            guesses = self.guesses[:-5]
+            guessed_words = chunks(self.guesses, 5)
+            with open(Path(__file__).resolve().parent / "static/sharesite/words.js", "r") as f:
+                words = f.read()[21:-8].replace('"', '').strip().split(", ")#[:2315]
+                words = [word.upper() for word in words]
+            found_bad_letters = list(set([l for l in guesses if l not in self.wordle.answer]))
+            found_good_letters = list(set([l for l in guesses if l in self.wordle.answer]))
+            colors = self.get_colors()[:len(guesses)]
+            matches = list(set([i.start() % 5 for i in re.finditer("G", colors)]))
+            regex_str = ""
+            for i in range(5):
+                if(i in matches):
+                    regex_str = regex_str + self.wordle.answer[i]
+                else:
+                    regex_str = regex_str + f"[^{''.join(found_bad_letters)}]"
+            regex = re.compile(regex_str)
+            possible_words = [word for word in words if regex.match(word)]
+            for letter in found_good_letters:
+                possible_words = [word for word in possible_words if letter in word]
+            possible_words = [word for word in possible_words if word not in guessed_words]
+            # return ", ".join(possible_words)
+            return f"1 in {len(possible_words) + 1} chance"
+
+        else:
+            return self.statistics_data
 
     def get_colors(self):
         colors = ""
-        guesses = self.guesses.ljust(30)
-        for word_idx in range(6):
+        guesses = chunks(self.guesses.ljust(30), 5)
+        for guess in guesses:
             word = self.wordle.answer
             word_colors = ["W", "W", "W", "W", "W"]
-            guess = guesses[word_idx*5:(word_idx*5)+5]
             for letter_idx in range(5):
                 if(guess[letter_idx] == self.wordle.answer[letter_idx]):
                     word_colors[letter_idx] = "G"

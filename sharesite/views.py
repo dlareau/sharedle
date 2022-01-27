@@ -170,5 +170,6 @@ def group(request, group_id):
             grid = list(zip(guess, colors))
         except Submission.DoesNotExist:
             grid = list(zip(" " * 30, "W" * 30))
-        data.append({"name": member.nickname, "pk": member.pk, "grid": grid})
+            submission = None
+        data.append({"name": member.nickname, "pk": member.pk, "grid": grid, "submission": submission})
     return render(request, "sharesite/group.html", {"wordle": wordle, "player_data": data, "group": group, "domain": settings.DOMAIN, "day": day, "is_current_day": is_current_day})

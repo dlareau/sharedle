@@ -13,6 +13,9 @@
         <div class="flex flex-col justify-center items-center m-3">
           <h1>{{player.name}}</h1>
           {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl" grid=player.grid%}
+          {% if player.submission %}
+          <p>{{player.submission.statistics}}</p>
+          {% endif %}
         </div>
       {% endfor%}
     </div>
