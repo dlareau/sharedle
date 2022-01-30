@@ -11,6 +11,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     timezone = models.CharField(max_length=50)
     high_contrast = models.BooleanField(default=False)
+    show_statistics = models.BooleanField(default=False)
 
 
 class Group(models.Model):
@@ -43,7 +44,7 @@ class GroupMember(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.nickname} => {self.group.name}" 
+        return f"{self.nickname} => {self.group.name}"
 
 
 class Wordle(models.Model):
@@ -66,33 +67,47 @@ class Submission(models.Model):
     submission_time = models.DateTimeField()
     statistics_data = models.JSONField(blank=True, null=True)
 
-    @property
-    def statistics(self):
-        if(self.statistics_data is None):
-            # last_guess_chance
-            words = []
+    def statistics(self, regenerate=False):
+        if(self.statistics_data is None or regenerate):
+            #### last_guess_chance ####
+
+            # divide up guesses
             guesses = self.guesses[:-5]
             guessed_words = chunks(self.guesses, 5)
+            colors = chunks(self.get_colors()[:len(guesses)], 5)
+
+            # get words: todo save this for speed
+            words = []
             with open(Path(__file__).resolve().parent / "static/sharesite/words.js", "r") as f:
                 words = f.read()[21:-8].replace('"', '').strip().split(", ")#[:2315]
                 words = [word.upper() for word in words]
-            found_bad_letters = list(set([l for l in guesses if l not in self.wordle.answer]))
-            found_good_letters = list(set([l for l in guesses if l in self.wordle.answer]))
-            colors = self.get_colors()[:len(guesses)]
-            matches = list(set([i.start() % 5 for i in re.finditer("G", colors)]))
-            regex_str = ""
-            for i in range(5):
-                if(i in matches):
-                    regex_str = regex_str + self.wordle.answer[i]
-                else:
-                    regex_str = regex_str + f"[^{''.join(found_bad_letters)}]"
-            regex = re.compile(regex_str)
-            possible_words = [word for word in words if regex.match(word)]
-            for letter in found_good_letters:
-                possible_words = [word for word in possible_words if letter in word]
-            possible_words = [word for word in possible_words if word not in guessed_words]
-            # return ", ".join(possible_words)
-            return f"1 in {len(possible_words) + 1} chance"
+
+            found_bad_letters = []
+            found_good_letters = []
+            matches = []
+            num_left = [len(words)]
+            for guess, coloring in zip(guessed_words, colors):
+                if guess in words:
+                    words.remove(guess)
+                found_bad_letters = list(set(found_bad_letters + [l for l in guess if l not in self.wordle.answer]))
+                found_good_letters = list(set(found_good_letters + [l for l in guess if l in self.wordle.answer]))
+                matches = list(set(matches + [i.start() for i in re.finditer("G", coloring)]))
+                regex_str = ""
+                for i in range(5):
+                    if(i in matches):
+                        regex_str = regex_str + self.wordle.answer[i]
+                    else:
+                        regex_str = regex_str + f"[^{''.join(found_bad_letters)}]"
+                regex = re.compile(regex_str)
+                words = [word for word in words if regex.match(word)]
+                for letter in found_good_letters:
+                    words = [word for word in words if letter in word]
+                num_left.append(len(words))
+            num_left.append(1)
+            num_left = num_left + ([1] * (7 - len(num_left)))
+            self.statistics_data = num_left
+            self.save()
+            return num_left
 
         else:
             return self.statistics_data

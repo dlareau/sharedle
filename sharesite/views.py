@@ -13,6 +13,7 @@ import pytz
 
 from .models import Group, GroupMember, Submission, Wordle, Profile
 
+
 def get_current_user_day(user):
     return (timezone.localtime(timezone=pytz.timezone(user.profile.timezone)).date() - date(2021, 6, 19)).days
 
@@ -59,6 +60,7 @@ def update_profile(request):
         return JsonResponse({"result": "success"})
     return JsonResponse({"result": "invalid request"})
 
+
 @login_required
 def input(request):
     day = get_current_user_day(request.user)
@@ -83,7 +85,11 @@ def input(request):
     except Submission.DoesNotExist:
         grid = ""
 
-    return render(request, "sharesite/input.html", {"grid": grid, "correct_word": wordle.answer, "day": day, "is_current_day": is_current_day})
+    context = {"grid": grid,
+               "correct_word": wordle.answer,
+               "day": day,
+               "is_current_day": is_current_day}
+    return render(request, "sharesite/input.html", context)
 
 
 @login_required
@@ -93,7 +99,7 @@ def groups(request):
         group = Group.objects.create(name=name, owner=request.user)
         GroupMember.objects.create(group=group, user=request.user, nickname=request.user.username)
     if("all" in request.GET and request.user.is_superuser):
-        groups = Group.objects.all()
+        groups = sorted(Group.objects.all(), key=lambda x: -x.num_members)
     else:
         groups = request.user.share_groups.all()
     day = get_current_user_day(request.user)
@@ -107,7 +113,10 @@ def groups(request):
     wordle = Wordle.objects.get(day=day)
     for group in groups:
         group.num_finished_curr = group.num_finished(wordle)
-    return render(request, "sharesite/groups.html", {"groups": groups, "day": day, "is_current_day": is_current_day})
+    context = {"groups": groups,
+               "day": day,
+               "is_current_day": is_current_day}
+    return render(request, "sharesite/groups.html", context)
 
 
 @login_required
@@ -159,7 +168,12 @@ def group(request, group_id):
     else:
         members = GroupMember.objects.filter(group=group).order_by(Lower('nickname'))
         done = Submission.objects.filter(user=request.user, wordle=wordle).count() == 1
+
     data = []
+    if(request.user.profile.show_statistics):
+        statistics = []
+    else:
+        statistics = None
     for member in members:
         try:
             submission = Submission.objects.get(user=member.user, wordle=wordle)
@@ -168,8 +182,24 @@ def group(request, group_id):
             if(not done):
                 guess = " " * 30
             grid = list(zip(guess, colors))
+            if(request.user.profile.show_statistics):
+                statistics.append(submission.statistics())
         except Submission.DoesNotExist:
             grid = list(zip(" " * 30, "W" * 30))
             submission = None
-        data.append({"name": member.nickname, "pk": member.pk, "grid": grid, "submission": submission})
-    return render(request, "sharesite/group.html", {"wordle": wordle, "player_data": data, "group": group, "domain": settings.DOMAIN, "day": day, "is_current_day": is_current_day})
+        data.append({"name": member.nickname,
+                     "pk": member.pk,
+                     "grid": grid,
+                     "submission": submission})
+    if(request.user.profile.show_statistics):
+        statistics = zip(range(7), *statistics)
+        statistics = [list(x) for x in statistics]
+    context = {"wordle": wordle,
+               "statistics": statistics,
+               "player_data": data,
+               "group": group,
+               "domain": settings.DOMAIN,
+               "day": day,
+               "is_current_day": is_current_day}
+
+    return render(request, "sharesite/group.html", context)

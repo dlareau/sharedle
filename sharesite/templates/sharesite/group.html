@@ -1,6 +1,48 @@
 {% extends "sharesite/base.html" %}
 {% load static %}
 
+{% if statistics %}
+  {% block includes %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+      <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart', 'line']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+          var data = new google.visualization.DataTable();
+
+          data.addColumn('number', 'Guess');
+          {% for player in player_data %}
+            {% if player.submission %}
+              data.addColumn('number', '{{player.name}}');
+            {% endif %}
+          {% endfor %}
+
+          data.addRows([
+            {% for row in statistics %}
+              {{ row }},
+            {% endfor %}
+          ]);
+
+          var options = {
+            title: 'Available words per guess',
+            width: 900,
+            height: 500,
+            backgroundColor: { fill:'transparent' },
+            vAxis: {
+              scaleType: 'log'
+            }
+          };
+
+          var chart = new google.visualization.LineChart(document.getElementById('linechart_material'));
+
+          chart.draw(data, options);
+        }
+      </script>
+  {% endblock includes %}
+{% endif %}
+
 {% block content %}
   {% include "sharesite/day_browser.html" %}
   <div class="flex flex-col justify-center mt-6 items-center">
@@ -13,12 +55,13 @@
         <div class="flex flex-col justify-center items-center m-3">
           <h1>{{player.name}}</h1>
           {% include "sharesite/grid.html" with width="w-8" height="h-8" spacing="gap-1" text="text-xl" grid=player.grid%}
-          {% if player.submission %}
-          <p>{{player.submission.statistics}}</p>
-          {% endif %}
         </div>
       {% endfor%}
     </div>
+    {% if statistics %}
+      <div id="linechart_material" style="width: 900px; height: 500px; margin: -30px;"></div>
+    {% endif %}
+
     {% if request.user == group.owner %}
       <button type="button" class="my-5 form-button button-gray" data-bs-toggle="modal" data-bs-target="#groupModalCenter">
         Manage Group
