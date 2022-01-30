@@ -1,12 +1,12 @@
 <div class="flex flex-row justify-center items-center mt-5">
 	{% if day == 0 %}
-		<span class="text-4xl mr-3 text-white" alt="Can't go beyond day 0">&lt;</span>
+		<span class="text-4xl mr-3 text-gray-300 dark:text-slate-900" alt="Can't go beyond day 0">&lt;</span>
 	{% else %}
 		<a href="?day={{day|add:"-1"}}" class="text-4xl mr-3" alt="Previous day" title="Previous day">&lt;</a>
 	{% endif %}
 	<h3 class="text-xl">Day {{day}}</h3>
 	{% if is_current_day %}
-		<span class="text-4xl ml-3 text-white" alt="Can't go beyond current day">&gt;</span>
+		<span class="text-4xl ml-3 text-gray-300 dark:text-slate-700" alt="Can't go beyond current day">&gt;</span>
 	{% else %}
 		<a href="?day={{day|add:"1"}}" class="text-4xl ml-3" alt="Next day" title="Next day">&gt;</a>
 	{% endif %}
