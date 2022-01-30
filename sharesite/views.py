@@ -16,6 +16,21 @@ from .models import Group, GroupMember, Submission, Wordle, Profile
 def get_current_user_day(user):
     return (timezone.localtime(timezone=pytz.timezone(user.profile.timezone)).date() - date(2021, 6, 19)).days
 
+def parse_requested_day(request):
+    day = get_current_user_day(request.user)
+    is_current_day = True
+    if "day" in request.GET:
+        try:
+            request_day = int(request.GET.get("day"))
+            if request_day < 0:
+                raise ValueError
+        except ValueError:
+            request_day = day
+        if(request_day < day):
+            day = request_day
+            is_current_day = False
+    return day, is_current_day
+
 
 # Create your views here.
 def index(request):
@@ -61,13 +76,7 @@ def update_profile(request):
 
 @login_required
 def input(request):
-    day = get_current_user_day(request.user)
-    is_current_day = True
-    if "day" in request.GET:
-        request_day = int(request.GET.get("day"))
-        if(request_day < day):
-            day = request_day
-            is_current_day = False
+    day, is_current_day = parse_requested_day(request)
 
     wordle = Wordle.objects.get(day=day)
     if request.method == "POST":
@@ -96,13 +105,8 @@ def groups(request):
         groups = Group.objects.all()
     else:
         groups = request.user.share_groups.all()
-    day = get_current_user_day(request.user)
-    is_current_day = True
-    if "day" in request.GET:
-        request_day = int(request.GET.get("day"))
-        if(request_day < day):
-            day = request_day
-            is_current_day = False
+
+    day, is_current_day = parse_requested_day(request)
 
     wordle = Wordle.objects.get(day=day)
     for group in groups:
@@ -140,13 +144,7 @@ def group(request, group_id):
                 GroupMember.objects.get(user=request.user, group=group).delete()
                 return redirect("/groups/")
 
-    day = get_current_user_day(request.user)
-    is_current_day = True
-    if "day" in request.GET:
-        request_day = int(request.GET.get("day"))
-        if(request_day < day):
-            day = request_day
-            is_current_day = False
+    day, is_current_day = parse_requested_day(request)
 
     wordle = Wordle.objects.get(day=day)
     if("all" in request.GET and request.user.is_superuser):
