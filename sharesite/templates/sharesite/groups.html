@@ -8,7 +8,7 @@
     <div class="flex flex-wrap flex-row justify-center items-center">
       {% for group in groups %}
         <a href="/group/{{group.id}}/{% if day and not is_current_day %}?day={{day}}{% endif %}">
-          <div class="flex flex-col justify-center items-center m-4 w-32 h-28 rounded-lg shadow-lg border-2 border-black dark:border-gray-400
+          <div class="flex flex-col justify-center items-center m-3 w-36 h-32 rounded-lg shadow-lg border-2 border-black dark:border-gray-400
                       {% if group.num_members == group.num_finished_curr %} bg-green-300 dark:bg-green-800 {% endif %}">
             <h3 class="text-xl text-center">{{group.name}}</h3>
             <div class="text-4xl">{{group.num_finished_curr}}/{{group.num_members}}</div>
