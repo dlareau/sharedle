@@ -2,7 +2,7 @@
 
 from django.db import migrations
 
-def add_wordles(apps, schema_editor):
+def update_wordles(apps, schema_editor):
     # We can't import the Wordle model directly as it may be a newer
     # version than this migration expects. We use the historical version.
     Wordle = apps.get_model('sharesite', 'Wordle')
@@ -11,16 +11,18 @@ def add_wordles(apps, schema_editor):
         words = word_list[:word_list.index("aahed")]
         i = 0
         for word in words:
-            Wordle.objects.create(day=i, answer=word.upper())
+            w = Wordle.objects.get(day=i)
+            w.answer = word.upper()
+            w.save()
             i += 1
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sharesite', '0004_groupmember_one_group'),
+        ('sharesite', '0011_profile_show_statistics'),
     ]
 
     operations = [
-        migrations.RunPython(add_wordles),
+        migrations.RunPython(update_wordles),
     ]

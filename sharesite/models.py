@@ -79,7 +79,7 @@ class Submission(models.Model):
             # get words: todo save this for speed
             words = []
             with open(Path(__file__).resolve().parent / "static/sharesite/words.js", "r") as f:
-                words = f.read()[21:-8].replace('"', '').strip().split(", ")#[:2315]
+                words = f.read()[21:-3].replace('"', '').strip().split(", ")#[:2315]
                 words = [word.upper() for word in words]
 
             found_bad_letters = []
