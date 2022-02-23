@@ -11,3 +11,8 @@
 		<a href="?day={{day|add:"1"}}" class="text-4xl ml-3" alt="Next day" title="Next day">&gt;</a>
 	{% endif %}
 </div>
+<div class="flex flex-row justify-center items-center text-sm">
+	{%- assign epoch = "2021-06-19 12:00" -%}
+	{%- assign offset = day | times: 86400 -%}
+	{{ epoch | add: offset | date: "%A %e %B %Y" }}
+</div>
